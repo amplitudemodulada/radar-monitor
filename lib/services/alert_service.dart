@@ -1,6 +1,5 @@
 import 'package:audioplayers/audioplayers.dart';
-import 'package:vibration/vibration.dart';
-import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import '../models/alert_config.dart';
 
 class AlertService {
@@ -33,12 +32,11 @@ class AlertService {
 
     _isVibrating = true;
     try {
-      final hasVibrator = await Vibration.hasVibrator() ?? false;
-      if (hasVibrator) {
-        for (int i = 0; i < 3; i++) {
-          Vibration.vibrate(duration: 300);
-          await Future.delayed(const Duration(milliseconds: 400));
-        }
+      for (int i = 0; i < 3; i++) {
+        HapticFeedback.heavyImpact();
+        await Future.delayed(const Duration(milliseconds: 300));
+        HapticFeedback.heavyImpact();
+        await Future.delayed(const Duration(milliseconds: 300));
       }
     } finally {
       _isVibrating = false;
