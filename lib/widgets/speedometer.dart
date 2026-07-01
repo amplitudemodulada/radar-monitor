@@ -75,8 +75,8 @@ class _SpeedometerPainter extends CustomPainter {
       ..shader = RadialGradient(
         colors: [
           Colors.grey.shade900,
-          Colors.grey.shade850,
-          Colors.black87,
+      const Color(0xFF303030),
+      Colors.black87,
         ],
         stops: const [0.0, 0.6, 1.0],
       ).createShader(Rect.fromCircle(center: center, radius: radius));
@@ -261,8 +261,6 @@ class _SpeedometerPainter extends CustomPainter {
     final needlePaint = Paint()
       ..shader = LinearGradient(
         colors: [accentColor, accentColor.withOpacity(0.6)],
-        begin: center,
-        end: needleTip,
       ).createShader(Rect.fromPoints(center, needleTip));
 
     canvas.drawLine(center, needleTip, needlePaint..strokeWidth = 3);

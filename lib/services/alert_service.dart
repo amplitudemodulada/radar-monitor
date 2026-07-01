@@ -35,14 +35,10 @@ class AlertService {
     try {
       final hasVibrator = await Vibration.hasVibrator() ?? false;
       if (hasVibrator) {
-        final pattern = [
-          const Duration(milliseconds: 0),
-          const Duration(milliseconds: 500),
-          const Duration(milliseconds: 200),
-          const Duration(milliseconds: 500),
-        ];
-        Vibration.vibrateWithPattern(pattern);
-        await Future.delayed(const Duration(seconds: 2));
+        for (int i = 0; i < 3; i++) {
+          Vibration.vibrate(duration: 300);
+          await Future.delayed(const Duration(milliseconds: 400));
+        }
       }
     } finally {
       _isVibrating = false;
@@ -70,7 +66,6 @@ class AlertService {
   void stopAllAlerts() {
     _audioPlayer.stop();
     _isPlaying = false;
-    Vibration.cancel();
     _isVibrating = false;
   }
 

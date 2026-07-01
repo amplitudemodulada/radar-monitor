@@ -80,7 +80,7 @@ class RadarDatabase {
     );
 
     final result = <RadarPoint>[];
-    for (final map in radares) {
+    for (final map in maps) {
       final radar = RadarPoint.fromMap(map);
       final distance = radar.distanceTo(lat, lon);
       if (distance <= radiusMeters) {

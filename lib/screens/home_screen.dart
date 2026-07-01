@@ -54,8 +54,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 end: Alignment.bottomCenter,
                 colors: [
                   Colors.grey.shade900,
-                  Colors.grey.shade850,
-                  Colors.black87,
+      const Color(0xFF303030),
+      Colors.black87,
                 ],
               ),
             ),
@@ -297,7 +297,7 @@ class _HomeScreenState extends State<HomeScreen> {
             pos.latitude,
             pos.longitude,
           );
-          alert.checkSpeedAlert(speed.speed, closest.velocidadeMaxima);
+          alert.checkSpeedAlert(speed.speed, closest.velocidadeMaxima.toDouble());
         }
       }
     }

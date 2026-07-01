@@ -8,7 +8,7 @@ class AppConstants {
   static const double criticalRadarDistance = 200.0;
   static const double speedUpdateInterval = 1.0;
   static const double gpsAccuracyMin = 10.0;
-  static const int maxSpeedKmh = 260;
+  static const double maxSpeedKmh = 260.0;
   static const double speedWarningThreshold = 1.1;
   static const String radarApiUrl = 'https://api.radares.org/v1/radars';
   static const String tilesUrl = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';

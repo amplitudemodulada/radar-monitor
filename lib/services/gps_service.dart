@@ -9,7 +9,10 @@ class GpsService {
   double _currentHeading = 0.0;
   double _totalDistance = 0.0;
 
-  Stream<Position>? get positionStream => _positionSubscription?.asStream();
+  Stream<Position>? get positionStream {
+    if (_positionSubscription == null) return null;
+    return _positionSubscription!.cast<Position>();
+  }
   double get currentSpeed => _currentSpeed;
   double get currentHeading => _currentHeading;
   double get totalDistance => _totalDistance;
