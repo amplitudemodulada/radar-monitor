@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:package_info_plus/package_info_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../providers/speed_provider.dart';
 import '../providers/radar_provider.dart';
 import '../providers/alert_provider.dart';
@@ -7,6 +9,7 @@ import '../widgets/speedometer.dart';
 import '../widgets/digital_speed.dart';
 import '../widgets/radar_alert_overlay.dart';
 import '../widgets/gps_indicator.dart';
+import '../services/update_checker.dart';
 import '../utils/constants.dart';
 import 'map_screen.dart';
 import 'settings_screen.dart';
@@ -36,6 +39,90 @@ class _HomeScreenState extends State<HomeScreen> {
     final gpsReady = await speedProvider.initialize();
     if (gpsReady && mounted) {
       speedProvider.startTracking();
+    }
+
+    _checkForUpdate();
+  }
+
+  Future<void> _checkForUpdate() async {
+    try {
+      final info = await PackageInfo.fromPlatform();
+      final currentVersion = info.version;
+      final checker = UpdateChecker();
+      final update = await checker.checkForUpdate(currentVersion);
+
+      if (update.hasUpdate && mounted) {
+        _showUpdateDialog(update);
+      }
+    } catch (_) {}
+  }
+
+  void _showUpdateDialog(UpdateInfo update) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: Row(
+          children: [
+            const Icon(Icons.system_update, color: Colors.blue),
+            const SizedBox(width: 8),
+            const Text('Atualização Disponível'),
+          ],
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Nova versão: ${update.latestVersion}',
+              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              'Sua versão: ${update.currentVersion}',
+              style: TextStyle(color: Colors.grey.shade600),
+            ),
+            if (update.notes != null && update.notes!.isNotEmpty) ...[
+              const SizedBox(height: 12),
+              Text(
+                'Novidades:',
+                style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  color: Colors.grey.shade700,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                update.notes!,
+                style: TextStyle(color: Colors.grey.shade600, fontSize: 13),
+                maxLines: 5,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ],
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Agora não'),
+          ),
+          FilledButton.icon(
+            onPressed: () {
+              Navigator.pop(ctx);
+              _openUpdate(update.releaseUrl);
+            },
+            icon: const Icon(Icons.download, size: 18),
+            label: const Text('Baixar'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _openUpdate(String url) async {
+    final uri = Uri.parse(url);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
     }
   }
 

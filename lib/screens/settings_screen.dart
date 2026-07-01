@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:package_info_plus/package_info_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../providers/alert_provider.dart';
 import '../providers/speed_provider.dart';
 import '../providers/radar_provider.dart';
 import '../models/alert_config.dart';
+import '../services/update_checker.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -218,13 +221,113 @@ class SettingsScreen extends StatelessWidget {
                     );
                   },
                 ),
+                const SizedBox(height: 24),
+                _buildSectionHeader('Sobre'),
+                const SizedBox(height: 8),
+                _buildVersionCard(context),
                 const SizedBox(height: 32),
               ],
-            ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _buildVersionCard(BuildContext context) {
+    return Card(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      child: FutureBuilder<PackageInfo>(
+        future: PackageInfo.fromPlatform(),
+        builder: (ctx, snapshot) {
+          final version = snapshot.data?.version ?? '1.0.0';
+          return Column(
+            children: [
+              ListTile(
+                leading: const Icon(Icons.info_outline),
+                title: const Text('Versão do App'),
+                trailing: Text(
+                  'v$version',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+                ),
+              ),
+              const Divider(height: 1),
+              ListTile(
+                leading: const Icon(Icons.system_update),
+                title: const Text('Verificar atualizações'),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () => _checkManualUpdate(context, version),
+              ),
+            ],
           );
         },
       ),
     );
+  }
+
+  Future<void> _checkManualUpdate(BuildContext context, String currentVersion) async {
+    final checker = UpdateChecker();
+    final update = await checker.checkForUpdate(currentVersion);
+
+    if (!context.mounted) return;
+
+    if (update.hasUpdate) {
+      showDialog(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          title: const Row(
+            children: [
+              Icon(Icons.system_update, color: Colors.blue),
+              SizedBox(width: 8),
+              Text('Atualização Disponível'),
+            ],
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Nova versão: ${update.latestVersion}',
+                  style: const TextStyle(fontWeight: FontWeight.bold)),
+              Text('Atual: $currentVersion',
+                  style: TextStyle(color: Colors.grey.shade600)),
+              if (update.notes != null && update.notes!.isNotEmpty) ...[
+                const SizedBox(height: 12),
+                Text(update.notes!, style: const TextStyle(fontSize: 13)),
+              ],
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx),
+              child: const Text('Agora não'),
+            ),
+            FilledButton.icon(
+              onPressed: () {
+                Navigator.pop(ctx);
+                launchUrl(Uri.parse(update.releaseUrl),
+                    mode: LaunchMode.externalApplication);
+              },
+              icon: const Icon(Icons.download, size: 18),
+              label: const Text('Baixar'),
+            ),
+          ],
+        ),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Você já está na versão mais recente (v$currentVersion)'),
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          duration: const Duration(seconds: 3),
+        ),
+      );
+    }
   }
 
   Widget _buildSectionHeader(String title) {
