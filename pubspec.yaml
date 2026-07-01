@@ -1,0 +1,39 @@
+name: radar_monitor
+description: Monitor de velocidade e alerta de radares para Android e iOS.
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  provider: ^6.1.1
+  geolocator: ^10.1.0
+  geocoding: ^2.1.1
+  flutter_map: ^6.1.0
+  latlong2: ^0.9.0
+  sqflite: ^2.3.0
+  path: ^1.8.3
+  path_provider: ^2.1.1
+  audioplayers: ^5.2.1
+  vibration: ^1.8.4
+  http: ^1.1.2
+  flutter_background_service: ^5.0.3
+  shared_preferences: ^2.2.2
+  intl: ^0.19.0
+  flutter_local_notifications: ^17.0.0
+  permission_handler: ^11.1.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.1
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/data/radares.json
+    - assets/sounds/alerta_radar.mp3
+    - assets/sounds/alerta_limite.mp3

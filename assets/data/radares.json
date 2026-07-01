@@ -1,0 +1,47 @@
+[
+  {
+    "id": 1,
+    "latitude": -23.5505,
+    "longitude": -46.6333,
+    "tipo": "fixo",
+    "velocidade_maxima": 60,
+    "direcao": "ambos",
+    "ativo": true
+  },
+  {
+    "id": 2,
+    "latitude": -23.5610,
+    "longitude": -46.6560,
+    "tipo": "fixo",
+    "velocidade_maxima": 50,
+    "direcao": "ambos",
+    "ativo": true
+  },
+  {
+    "id": 3,
+    "latitude": -23.5460,
+    "longitude": -46.6440,
+    "tipo": "fixo",
+    "velocidade_maxima": 70,
+    "direcao": "norte",
+    "ativo": true
+  },
+  {
+    "id": 4,
+    "latitude": -23.5550,
+    "longitude": -46.6200,
+    "tipo": "fixo",
+    "velocidade_maxima": 40,
+    "direcao": "ambos",
+    "ativo": true
+  },
+  {
+    "id": 5,
+    "latitude": -23.5400,
+    "longitude": -46.6700,
+    "tipo": "fixo",
+    "velocidade_maxima": 80,
+    "direcao": "sul",
+    "ativo": false
+  }
+]
