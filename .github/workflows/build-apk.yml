@@ -25,7 +25,10 @@ jobs:
           cache: true
 
       - name: Generate platform files
-        run: flutter create --platforms=android .
+        run: |
+          flutter create --project-name radar_monitor --platforms=android temp_project
+          cp -r temp_project/android .
+          rm -rf temp_project
 
       - name: Install dependencies
         run: flutter pub get
