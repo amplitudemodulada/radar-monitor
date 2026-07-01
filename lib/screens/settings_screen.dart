@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../providers/alert_provider.dart';
-import '../providers/speed_provider.dart';
 import '../providers/radar_provider.dart';
 import '../models/alert_config.dart';
 import '../services/update_checker.dart';
@@ -227,9 +226,9 @@ class SettingsScreen extends StatelessWidget {
                 _buildVersionCard(context),
                 const SizedBox(height: 32),
               ],
-            );
-          },
-        ),
+            ),
+          );
+        },
       ),
     );
   }
@@ -272,9 +271,7 @@ class SettingsScreen extends StatelessWidget {
   Future<void> _checkManualUpdate(BuildContext context, String currentVersion) async {
     final checker = UpdateChecker();
     final update = await checker.checkForUpdate(currentVersion);
-
     if (!context.mounted) return;
-
     if (update.hasUpdate) {
       showDialog(
         context: context,
